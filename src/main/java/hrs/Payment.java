@@ -20,9 +20,27 @@ public class Payment {
 
     @PostPersist
     public void onPostPersist(){
+
         PaymentApproved paymentApproved = new PaymentApproved();
         BeanUtils.copyProperties(this, paymentApproved);
-        paymentApproved.publishAfterCommit();
+
+        // 커밋이 완료된 후에 이벤트를 발생하도록 함.
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+            @Override
+            public void afterCommit() {
+                paymentApproved.publishAfterCommit();
+            }
+        });
+
+        try {
+            Thread.currentThread().sleep((long) (400 + Math.random() * 220));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+
+
     }
 
     @PostUpdate
