@@ -28,7 +28,7 @@ public class Payment {
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
             @Override
             public void afterCommit() {
-                paymentApproved.publishAfterCommit();
+                paymentApproved.publish();
             }
         });
 
